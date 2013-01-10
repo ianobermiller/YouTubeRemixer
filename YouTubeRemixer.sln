@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeMixer", "YouTubeMixer.csproj", "{1B87879D-3B7A-4C8A-860A-98AE11087D3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubeRemixer", "YouTubeRemixer.csproj", "{1B87879D-3B7A-4C8A-860A-98AE11087D3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
