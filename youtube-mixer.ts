@@ -120,9 +120,6 @@ module YouTubeMixer {
             })
             .on('change keyup', 'textarea', e => {
                 var $textarea = $(e.currentTarget);
-                // Hacky way to do data binding
-                // We know that each comment has two inputs, and that
-                // the first is the start, and the second is the end time
                 var index = $('.comments__list textarea').index($textarea);
                 var comment = currentVideo.comments[index];
                 comment.text = $textarea.val();
@@ -130,9 +127,6 @@ module YouTubeMixer {
             })
             .on('click', 'button', e => {
                 var $button = $(e.currentTarget);
-                // Hacky way to do data binding
-                // We know that each comment has two inputs, and that
-                // the first is the start, and the second is the end time
                 var index = $('.comments__list .comments__list__item__delete').index($button);
                 currentVideo.comments.splice(index, 1);
                 $button.closest('tr').fadeOut(() => {
