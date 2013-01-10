@@ -116,11 +116,35 @@ module YouTubeMixer {
                 } else {
                     comment.startTimeInMs = input.val();
                 }
+                toggleComments(getCurrentTime());
+            })
+            .on('change keyup', 'textarea', e => {
+                var $textarea = $(e.currentTarget);
+                // Hacky way to do data binding
+                // We know that each comment has two inputs, and that
+                // the first is the start, and the second is the end time
+                var index = $('.comments__list textarea').index($textarea);
+                var comment = currentVideo.comments[index];
+                comment.text = $textarea.val();
+                renderPlayerComments();
+            })
+            .on('click', 'button', e => {
+                var $button = $(e.currentTarget);
+                // Hacky way to do data binding
+                // We know that each comment has two inputs, and that
+                // the first is the start, and the second is the end time
+                var index = $('.comments__list .comments__list__item__delete').index($button);
+                currentVideo.comments.splice(index, 1);
+                $button.closest('tr').fadeOut(() => {
+                    renderComments();
+                });
             });
             
         $commentBox = $('.comments__input').keydown(e => {
             if (e.which === 13) addComment(e);
         });
+
+        $('.comments__add').click(addComment);
     }
 
     function seek(e: JQueryEventObject): void {
@@ -200,15 +224,19 @@ module YouTubeMixer {
     }
 
     var playerCommentTemplate;
+    function renderPlayerComments(): void {
+        playerCommentTemplate = playerCommentTemplate || Handlebars.compile($('#player-comment-template').html());
+        $playerCommentsContainer.html(currentVideo.comments.map(v => playerCommentTemplate(v)).join(''));
+        $playerComments = $('.player__comments__comment');
+        toggleComments(getCurrentTime());
+    }
+    
     var commentListItemTemplate;
     function renderComments(): void {
         commentListItemTemplate = commentListItemTemplate || Handlebars.compile($('#comment-list-item-template').html());
         $comments.html(currentVideo.comments.map(v => commentListItemTemplate(v)).join(''));
 
-        playerCommentTemplate = playerCommentTemplate || Handlebars.compile($('#player-comment-template').html());
-        $playerCommentsContainer.html(currentVideo.comments.map(v => playerCommentTemplate(v)).join(''));
-        $playerComments = $('.player__comments__comment');
-        toggleComments(getCurrentTime());
+        renderPlayerComments();
     }
 
     var lastTime: number = null;

@@ -17,8 +17,9 @@
 </head>
 
 <body>
-    <h1>YouTube Mixer</h1>
+    <h1>YouTube Remixer</h1>
     <div class="search">
+        <label>Search for videos to add:</label>
         <input class="search__input" type="text" value="foo fighters" />
         <ul class="search__results">
         </ul>
@@ -31,9 +32,13 @@
         <div><label><input type="checkbox" class="player__autoplay" checked /> Enable autoplay</label></div>
     </div>
     <div class="comments">
+        <h2>Comments</h2>
         <textarea class="comments__input"></textarea>
-        <ul class="comments__list">
-        </ul>
+        <button class="comments__add" type="button">Add Comment</button>
+        <table>
+            <thead><tr><td>Text</td><td>Start (ms)</td><td>End (ms)</td><td></td></tr></thead>
+            <tbody class="comments__list"></tbody>
+        </table>
     </div>
     <div class="queue">
     </div>
@@ -44,9 +49,10 @@
 
     <script id="comment-list-item-template" type="text/x-handlebars-template">
         <tr class="comments__list__item">
-            <td>{{text}}</td>
+            <td><textarea class="comments__list__item__text">{{text}}</textarea></td>
             <td>{{time_input startTimeInMs}}</td>
             <td>{{time_input endTimeInMs}}</td>
+            <td><button class="comments__list__item__delete" type="button">X</button></td>
         </tr>
     </script>
 

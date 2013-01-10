@@ -437,6 +437,7 @@ interface JQuery {
     fadeIn(duration?: any, callback?: any): JQuery;
     fadeIn(duration?: any, easing?: string, callback?: any): JQuery;
 
+    fadeOut(callback?: any): JQuery;
     fadeOut(duration?: any, callback?: any): JQuery;
     fadeOut(duration?: any, easing?: string, callback?: any): JQuery;
 
