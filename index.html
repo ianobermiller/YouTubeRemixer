@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-<meta charset="utf-8">
-<title>YouTube Remixer</title>
-<meta name="viewport" content="width=device-width">
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/2.0.1/normalize.css" />
-<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/cupertino/jquery-ui.css" />
-<link type="text/css" rel="stylesheet" href="youtube-mixer.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
-<script src="youtube-mixer.js"></script>
-<script>
-    YouTubeMixer.init();
-</script>
+    <meta charset="utf-8">
+    <title>YouTube Remixer</title>
+    <meta name="viewport" content="width=device-width">
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/2.0.1/normalize.css" />
+    <link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/cupertino/jquery-ui.css" />
+    <link type="text/css" rel="stylesheet" href="youtube-mixer.css" />
 </head>
 
 <body>
@@ -24,13 +17,20 @@
         <ul class="search__results">
         </ul>
     </div>
+
+    <div>
+        <input class="remix__title" type="text" placeholder="Title" />
+        <button class="remix__save" type="button">Save</button>
+        <button class="remix__load" type="button">Load</button>
+    </div>
+
     <div class="player">
         <div id="player__iframe"></div>
         <div class="player__comments">
         </div>
         <div class="player__controls"></div>
-        <div><label><input type="checkbox" class="player__autoplay" checked /> Enable autoplay</label></div>
     </div>
+
     <div class="comments">
         <h2>Comments</h2>
         <textarea class="comments__input"></textarea>
@@ -40,6 +40,9 @@
             <tbody class="comments__list"></tbody>
         </table>
     </div>
+
+    <h2>Queue</h2>
+    <div><label><input type="checkbox" class="player__autoplay" checked /> Enable autoplay</label></div>
     <div class="queue">
     </div>
 
@@ -68,6 +71,14 @@
 
     <script id="time-input-template" type="text/x-handlebars-template">
         <button type="button" class="seek-to" data-time="{{timeInMs}}">&#8630;</button><input class="time-input" type="number" min="0" step="500" value="{{timeInMs}}" />
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
+    <script src="youtube-mixer.js"></script>
+    <script>
+        YouTubeMixer.init();
     </script>
 </body>
 

@@ -4,6 +4,7 @@
 /// <reference path="d.ts/youtube.d.ts" />
 
 interface IRemix {
+    title: string;
     videos: IVideo[];
 }
 
@@ -38,7 +39,7 @@ module YouTubeMixer {
     var $playerComments: JQuery;
     var $playerControls: JQuery;
 
-    var remix: IRemix = { videos: [] };
+    var remix: IRemix = { title: '', videos: [] };
     var currentVideo: IVideo = defaultVideo;
     var player: YT.Player;
 
@@ -53,7 +54,7 @@ module YouTubeMixer {
 
             bindElements();
 
-            load(<any>{ "videos": [{ "title": "Foo Fighters. Walk.", "startTimeInMs": 1000, "endTimeInMs": 60000, "url": "https://www.youtube.com/v/4PkcfQtibmU?version=3&f=videos&app=youtube_gdata", "thumbnailUrl": "http://i.ytimg.com/vi/4PkcfQtibmU/default.jpg", "comments": [{ "text": "wtf?", "startTimeInMs": 1000, "endTimeInMs": 2000, "top": 200, "left": 137, "width": 79, "height": 37 }, { "text": "yay!", "startTimeInMs": 4000, "endTimeInMs": 9000, "top": 110, "left": 415, "width": null, "height": null }, { "text": "so cool guys except what about this super long comment that just goes on and on?!", "startTimeInMs": 6000, "endTimeInMs": 7000, "top": 297, "left": 520, "width": null, "height": null }, { "text": "get funky!", "startTimeInMs": 17000, "endTimeInMs": 19000, "top": 105, "left": 254, "width": 138, "height": 127 }] }] });
+            load(<any>{ "title": "Foo Fighters Remix", "videos": [{ "title": "Foo Fighters. Walk.", "startTimeInMs": 1000, "endTimeInMs": 60000, "url": "https://www.youtube.com/v/4PkcfQtibmU?version=3&f=videos&app=youtube_gdata", "thumbnailUrl": "http://i.ytimg.com/vi/4PkcfQtibmU/default.jpg", "comments": [{ "text": "wtf?", "startTimeInMs": 1000, "endTimeInMs": 2000, "top": 200, "left": 137, "width": 79, "height": 37 }, { "text": "yay!", "startTimeInMs": 4000, "endTimeInMs": 9000, "top": 110, "left": 415, "width": null, "height": null }, { "text": "so cool guys except what about this super long comment that just goes on and on?!", "startTimeInMs": 6000, "endTimeInMs": 7000, "top": 297, "left": 520, "width": null, "height": null }, { "text": "get funky!", "startTimeInMs": 17000, "endTimeInMs": 19000, "top": 105, "left": 254, "width": 138, "height": 127 }] }] });
         });
     }
 
@@ -101,6 +102,10 @@ module YouTubeMixer {
             $input.prev('.seek-to').data('time', $input.val());
         });
 
+        $('.remix__title').on('change', e => {
+            remix.title = $(e.currentTarget).val();
+        });
+
         // Coments
 
         $comments = $('.comments__list')
@@ -125,7 +130,7 @@ module YouTubeMixer {
                 comment.text = $textarea.val();
                 renderPlayerComments();
             })
-            .on('click', 'button', e => {
+            .on('click', '.comments__list__item__delete', e => {
                 var $button = $(e.currentTarget);
                 var index = $('.comments__list .comments__list__item__delete').index($button);
                 currentVideo.comments.splice(index, 1);
@@ -194,6 +199,7 @@ module YouTubeMixer {
     }
 
     function renderAll(): void {
+        $('.remix__title').val(remix.title);
         renderQueue();
         renderVideo();
     }
