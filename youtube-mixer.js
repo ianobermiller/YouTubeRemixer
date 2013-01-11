@@ -53,7 +53,15 @@ var YouTubeMixer;
             }
         }).on('click', '.player__split', splitCurrentVideo);
         $queue = $('.queue').on('click', '.queue__item', onQueueItemClicked);
-        $playerCommentsContainer = $('.player__comments').on('mouseenter click', '.player__comments__comment', setupDragAndResize);
+        $playerCommentsContainer = $('.player__comments').click(function (e) {
+            if(player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                player.playVideo();
+            } else {
+                if(player) {
+                    player.pauseVideo();
+                }
+            }
+        }).on('mouseenter click', '.player__comments__comment', setupDragAndResize);
         $playerControls = $('.player__controls').on('change', 'input', function (e) {
             var input = $(e.currentTarget);
             var index = $('.player__controls input').index(input);

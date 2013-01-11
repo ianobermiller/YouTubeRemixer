@@ -93,6 +93,13 @@ module YouTubeMixer {
         // Player
 
         $playerCommentsContainer = $('.player__comments')
+            .click(e => {
+                if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                    player.playVideo();
+                } else if (player) {
+                    player.pauseVideo();
+                }
+            })
             .on('mouseenter click', '.player__comments__comment', setupDragAndResize);
 
         $playerControls = $('.player__controls')
