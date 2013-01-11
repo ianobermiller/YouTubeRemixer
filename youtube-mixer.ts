@@ -391,14 +391,16 @@ module YouTubeMixer {
                 };
                 return video;
             });
-            showSearchResults(videos);
+            renderSearchResults(videos);
         });
     }
-
-    function showSearchResults(videos: IVideo[]): void {
-        $searchResults.show();
+    
+    var searchResultTemplate;
+    function renderSearchResults(videos: IVideo[]): void {
+        searchResultTemplate = searchResultTemplate || Handlebars.compile($('#search-result-template').html());
+        $searchResults.empty().show();
         videos.forEach(video => {
-            $('<li class="search__results__item"><img class="search__results__item__thumbnail" src="' + video.thumbnailUrl + '" /><span class="search__results__item__title">' + video.title + '</span></li>').data('video', video).appendTo($searchResults);
+            $(searchResultTemplate(video)).data('video', video).appendTo($searchResults);
         });
     }
     
