@@ -1,6 +1,7 @@
 /// <reference path="d.ts/handlebars-1.0.d.ts" />
 /// <reference path="d.ts/jquery-1.8.d.ts" />
 /// <reference path="d.ts/jqueryui-1.9.d.ts" />
+/// <reference path="d.ts/underscore-typed-1.4.d.ts" />
 /// <reference path="d.ts/youtube.d.ts" />
 
 interface IRemix {
@@ -73,6 +74,7 @@ module YouTubeMixer {
             .keydown(e => {
                 if (e.which === 13) search();
             });
+        $('.search__button').click(search);
 
         $searchResults = $('.search__results')
             .hide()
@@ -82,6 +84,7 @@ module YouTubeMixer {
             .click(e => {
                 if (!$(e.target).closest('.search__results').length) $searchResults.hide();
             })
+            .on('click', '.player__split', splitCurrentVideo);
 
         // Queue
 
@@ -190,6 +193,20 @@ module YouTubeMixer {
         $('.comments__add').click(addComment);
     }
 
+    function splitCurrentVideo(): void {
+        if (currentVideo) {
+            var index = remix.videos.indexOf(currentVideo);
+            var newVideo: IVideo = _.extend({}, currentVideo);
+            var current = getCurrentTime();
+            currentVideo.endTimeInMs = current;
+            newVideo.startTimeInMs = current;
+            newVideo.comments = [];
+            remix.videos.splice(index + 1, 0, newVideo);
+            renderVideo();
+            renderQueue();
+        }
+    }
+
     function seek(e: JQueryEventObject): void {
         var time: number = Number($(e.currentTarget).data('time'));
         player.seekTo(time / 1000, true);
@@ -230,7 +247,7 @@ module YouTubeMixer {
 
     export function load(newRemix: IRemix): void {
         remix = newRemix;
-        currentVideo = remix.videos[0] || defaultVideo;
+        loadVideo(remix.videos[0] || defaultVideo);
         renderAll();
     }
 
@@ -246,6 +263,7 @@ module YouTubeMixer {
         $remixTitle.val(remix.title);
         renderQueue();
         renderVideo();
+        renderComments();
     }
 
     function renderRemixList(): void {
@@ -273,8 +291,6 @@ module YouTubeMixer {
     function renderVideo(): void {
         currentVideoTemplate = currentVideoTemplate || Handlebars.compile($('#current-video-template').html());
         $playerControls.html(currentVideoTemplate(currentVideo));
-
-        renderComments();
     }
 
     var playerCommentTemplate;
@@ -301,6 +317,12 @@ module YouTubeMixer {
         if (currentTime !== lastTime) {
             if (currentTime >= currentVideo.endTimeInMs) {
                 player.pauseVideo();
+                if ($('.queue__autoplay').is(':checked')) {
+                    var index = remix.videos.indexOf(currentVideo);
+                    if (index >= 0 && index < remix.videos.length - 1) {
+                        loadVideo(remix.videos[index + 1]);
+                    }
+                }
             }
             toggleComments(currentTime);
             lastTime = currentTime;
@@ -332,6 +354,7 @@ module YouTubeMixer {
         if (video !== currentVideo) {
             currentVideo = video;
             renderVideo();
+            renderComments();
         }
     }
 
@@ -349,7 +372,7 @@ module YouTubeMixer {
             height: 20
         });
         currentVideo.comments.sort((a, b) => a.startTimeInMs - b.startTimeInMs);
-        renderVideo();
+        renderComments();
         e.preventDefault();
     }
 

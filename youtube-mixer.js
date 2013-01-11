@@ -45,12 +45,13 @@ var YouTubeMixer;
                 search();
             }
         });
+        $('.search__button').click(search);
         $searchResults = $('.search__results').hide().on('click', '.search__results__item', addVideo);
         $(document).click(function (e) {
             if(!$(e.target).closest('.search__results').length) {
                 $searchResults.hide();
             }
-        });
+        }).on('click', '.player__split', splitCurrentVideo);
         $queue = $('.queue').on('click', '.queue__item', onQueueItemClicked);
         $playerCommentsContainer = $('.player__comments').on('mouseenter click', '.player__comments__comment', setupDragAndResize);
         $playerControls = $('.player__controls').on('change', 'input', function (e) {
@@ -125,6 +126,20 @@ var YouTubeMixer;
         });
         $('.comments__add').click(addComment);
     }
+    function splitCurrentVideo() {
+        if(currentVideo) {
+            var index = remix.videos.indexOf(currentVideo);
+            var newVideo = _.extend({
+            }, currentVideo);
+            var current = getCurrentTime();
+            currentVideo.endTimeInMs = current;
+            newVideo.startTimeInMs = current;
+            newVideo.comments = [];
+            remix.videos.splice(index + 1, 0, newVideo);
+            renderVideo();
+            renderQueue();
+        }
+    }
     function seek(e) {
         var time = Number($(e.currentTarget).data('time'));
         player.seekTo(time / 1000, true);
@@ -165,7 +180,7 @@ var YouTubeMixer;
     YouTubeMixer.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
     function load(newRemix) {
         remix = newRemix;
-        currentVideo = remix.videos[0] || defaultVideo;
+        loadVideo(remix.videos[0] || defaultVideo);
         renderAll();
     }
     YouTubeMixer.load = load;
@@ -181,6 +196,7 @@ var YouTubeMixer;
         $remixTitle.val(remix.title);
         renderQueue();
         renderVideo();
+        renderComments();
     }
     function renderRemixList() {
         $remixList.empty();
@@ -208,7 +224,6 @@ var YouTubeMixer;
     function renderVideo() {
         currentVideoTemplate = currentVideoTemplate || Handlebars.compile($('#current-video-template').html());
         $playerControls.html(currentVideoTemplate(currentVideo));
-        renderComments();
     }
     var playerCommentTemplate;
     function renderPlayerComments() {
@@ -236,6 +251,12 @@ var YouTubeMixer;
         if(currentTime !== lastTime) {
             if(currentTime >= currentVideo.endTimeInMs) {
                 player.pauseVideo();
+                if($('.queue__autoplay').is(':checked')) {
+                    var index = remix.videos.indexOf(currentVideo);
+                    if(index >= 0 && index < remix.videos.length - 1) {
+                        loadVideo(remix.videos[index + 1]);
+                    }
+                }
             }
             toggleComments(currentTime);
             lastTime = currentTime;
@@ -267,6 +288,7 @@ var YouTubeMixer;
         if(video !== currentVideo) {
             currentVideo = video;
             renderVideo();
+            renderComments();
         }
     }
     function addComment(e) {
@@ -285,7 +307,7 @@ var YouTubeMixer;
         currentVideo.comments.sort(function (a, b) {
             return a.startTimeInMs - b.startTimeInMs;
         });
-        renderVideo();
+        renderComments();
         e.preventDefault();
     }
     function search() {

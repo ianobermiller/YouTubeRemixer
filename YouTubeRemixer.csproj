@@ -60,6 +60,7 @@
     <Content Include="d.ts\handlebars-1.0.d.ts" />
     <Content Include="d.ts\jquery-1.8.d.ts" />
     <Content Include="d.ts\jqueryui-1.9.d.ts" />
+    <Content Include="d.ts\underscore-typed-1.4.d.ts" />
     <Content Include="d.ts\youtube.d.ts" />
     <Content Include="index.html" />
     <Content Include="Web.config" />

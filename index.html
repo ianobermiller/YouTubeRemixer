@@ -14,11 +14,13 @@
     <div class="search">
         <label>Search for videos to add:</label>
         <input class="search__input" type="text" value="" />
+        <button class="search__button" type="button">Search</button>
         <ul class="search__results">
         </ul>
     </div>
 
     <div>
+        <label>Title:</label>
         <input class="remix__title" type="text" placeholder="Title" />
         <button class="remix__save" type="button">Save</button>
         <select class="remix__list"></select>
@@ -45,7 +47,7 @@
     </div>
 
     <h2>Queue</h2>
-    <div><label><input type="checkbox" class="player__autoplay" checked /> Enable autoplay</label></div>
+    <div><label><input type="checkbox" class="queue__autoplay" checked /> Enable autoplay</label></div>
     <div class="queue">
     </div>
 
@@ -69,7 +71,9 @@
     </script>
 
     <script id="current-video-template" type="text/x-handlebars-template">
-        Start: {{time_input startTimeInMs}}, Stop: {{time_input endTimeInMs}}
+        <label>Start</label> {{time_input startTimeInMs}}
+        <label>Stop</label> {{time_input endTimeInMs}}
+        <button type="button" class="player__split">Split</button>
     </script>
 
     <script id="time-input-template" type="text/x-handlebars-template">
@@ -81,6 +85,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
     <script src="youtube-mixer.js"></script>
     <script>
         YouTubeMixer.init();
