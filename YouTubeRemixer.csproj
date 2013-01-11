@@ -87,9 +87,6 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <Content Include="youtube-mixer.js.map">
-      <DependentUpon>youtube-mixer.ts</DependentUpon>
-    </Content>
     <LessCompile Include="youtube-mixer.less" />
   </ItemGroup>
   <PropertyGroup>
