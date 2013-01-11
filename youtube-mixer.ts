@@ -322,7 +322,7 @@ module YouTubeMixer {
 
         var currentTime = getCurrentTime();
         if (currentTime !== lastTime) {
-            if (currentTime >= currentVideo.endTimeInMs) {
+            if (currentTime >= currentVideo.endTimeInMs && player.getPlayerState() === YT.PlayerState.PLAYING) {
                 player.pauseVideo();
                 if ($('.queue__autoplay').is(':checked')) {
                     var index = remix.videos.indexOf(currentVideo);
