@@ -328,6 +328,7 @@ module YouTubeMixer {
                     var index = remix.videos.indexOf(currentVideo);
                     if (index >= 0 && index < remix.videos.length - 1) {
                         loadVideo(remix.videos[index + 1]);
+                        player.playVideoAt(currentVideo.startTimeInMs / 1000);
                     }
                 }
             }
