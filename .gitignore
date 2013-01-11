@@ -1,7 +1,6 @@
-*.css
 *.js.map
 *.min.js
-youtube-mixer.js
+*.min.css
 
 #################
 ## Visual Studio
