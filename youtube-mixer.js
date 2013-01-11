@@ -6,6 +6,13 @@ var defaultVideo = {
     endTimeInMs: 0,
     comments: []
 };
+function newRemix() {
+    return {
+        id: new Date().getTime().toString(),
+        title: '',
+        videos: []
+    };
+}
 var YouTubeMixer;
 (function (YouTubeMixer) {
     var $search;
@@ -16,10 +23,9 @@ var YouTubeMixer;
     var $commentBox;
     var $playerComments;
     var $playerControls;
-    var remix = {
-        title: '',
-        videos: []
-    };
+    var $remixTitle;
+    var $remixList;
+    var remix = newRemix();
     var currentVideo = defaultVideo;
     var player;
     function init() {
@@ -30,56 +36,6 @@ var YouTubeMixer;
         $(function () {
             setupTemplateHelpers();
             bindElements();
-            load({
-                "title": "Foo Fighters Remix",
-                "videos": [
-                    {
-                        "title": "Foo Fighters. Walk.",
-                        "startTimeInMs": 1000,
-                        "endTimeInMs": 60000,
-                        "url": "https://www.youtube.com/v/4PkcfQtibmU?version=3&f=videos&app=youtube_gdata",
-                        "thumbnailUrl": "http://i.ytimg.com/vi/4PkcfQtibmU/default.jpg",
-                        "comments": [
-                            {
-                                "text": "wtf?",
-                                "startTimeInMs": 1000,
-                                "endTimeInMs": 2000,
-                                "top": 200,
-                                "left": 137,
-                                "width": 79,
-                                "height": 37
-                            }, 
-                            {
-                                "text": "yay!",
-                                "startTimeInMs": 4000,
-                                "endTimeInMs": 9000,
-                                "top": 110,
-                                "left": 415,
-                                "width": null,
-                                "height": null
-                            }, 
-                            {
-                                "text": "so cool guys except what about this super long comment that just goes on and on?!",
-                                "startTimeInMs": 6000,
-                                "endTimeInMs": 7000,
-                                "top": 297,
-                                "left": 520,
-                                "width": null,
-                                "height": null
-                            }, 
-                            {
-                                "text": "get funky!",
-                                "startTimeInMs": 17000,
-                                "endTimeInMs": 19000,
-                                "top": 105,
-                                "left": 254,
-                                "width": 138,
-                                "height": 127
-                            }
-                        ]
-                    }
-                ]
-            });
         });
     }
     YouTubeMixer.init = init;
@@ -110,9 +66,31 @@ var YouTubeMixer;
             var $input = $(e.currentTarget);
             $input.prev('.seek-to').data('time', $input.val());
         });
-        $('.remix__title').on('change', function (e) {
+        $remixList = $('.remix__list');
+        $remixTitle = $('.remix__title').on('change', function (e) {
             remix.title = $(e.currentTarget).val();
         });
+        $('.remix__save').on('click', function (e) {
+            localStorage['remix-' + remix.id] = JSON.stringify(remix);
+            renderRemixList();
+        });
+        $('.remix__load').on('click', function (e) {
+            var key = $remixList.val();
+            if(key) {
+                load(JSON.parse(localStorage[key]));
+            }
+        });
+        $('.remix__delete').on('click', function (e) {
+            var key = $remixList.val();
+            if(key) {
+                localStorage.removeItem(key);
+                renderRemixList();
+            }
+        });
+        $('.remix__new').on('click', function (e) {
+            load(newRemix());
+        });
+        renderRemixList();
         $comments = $('.comments__list').on('change', 'input', function (e) {
             var input = $(e.currentTarget);
             var index = $('.comments__list input').index(input);
@@ -197,9 +175,18 @@ var YouTubeMixer;
     function onPlayerStateChange(event) {
     }
     function renderAll() {
-        $('.remix__title').val(remix.title);
+        $remixTitle.val(remix.title);
         renderQueue();
         renderVideo();
+    }
+    function renderRemixList() {
+        $remixList.empty();
+        for(var key in localStorage) {
+            if(key.indexOf('remix-') === 0) {
+                var remix = JSON.parse(localStorage[key]);
+                $remixList.append('<option value="' + key + '">' + remix.title + ' (' + key + ')</option>');
+            }
+        }
     }
     function getCurrentTime() {
         if(!player || !player.getCurrentTime) {

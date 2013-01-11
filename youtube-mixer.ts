@@ -4,6 +4,7 @@
 /// <reference path="d.ts/youtube.d.ts" />
 
 interface IRemix {
+    id: string;
     title: string;
     videos: IVideo[];
 }
@@ -29,6 +30,10 @@ interface IComment {
 
 var defaultVideo: IVideo = { title: '', url: '', thumbnailUrl: '', startTimeInMs: 0, endTimeInMs: 0, comments: [] };
 
+function newRemix(): IRemix {
+    return { id: new Date().getTime().toString(), title: '', videos: [] };
+}
+
 module YouTubeMixer {
     var $search: JQuery;
     var $searchResults: JQuery;
@@ -38,8 +43,10 @@ module YouTubeMixer {
     var $commentBox: JQuery;
     var $playerComments: JQuery;
     var $playerControls: JQuery;
+    var $remixTitle: JQuery;
+    var $remixList: JQuery;
 
-    var remix: IRemix = { title: '', videos: [] };
+    var remix = newRemix();
     var currentVideo: IVideo = defaultVideo;
     var player: YT.Player;
 
@@ -54,7 +61,7 @@ module YouTubeMixer {
 
             bindElements();
 
-            load(<any>{ "title": "Foo Fighters Remix", "videos": [{ "title": "Foo Fighters. Walk.", "startTimeInMs": 1000, "endTimeInMs": 60000, "url": "https://www.youtube.com/v/4PkcfQtibmU?version=3&f=videos&app=youtube_gdata", "thumbnailUrl": "http://i.ytimg.com/vi/4PkcfQtibmU/default.jpg", "comments": [{ "text": "wtf?", "startTimeInMs": 1000, "endTimeInMs": 2000, "top": 200, "left": 137, "width": 79, "height": 37 }, { "text": "yay!", "startTimeInMs": 4000, "endTimeInMs": 9000, "top": 110, "left": 415, "width": null, "height": null }, { "text": "so cool guys except what about this super long comment that just goes on and on?!", "startTimeInMs": 6000, "endTimeInMs": 7000, "top": 297, "left": 520, "width": null, "height": null }, { "text": "get funky!", "startTimeInMs": 17000, "endTimeInMs": 19000, "top": 105, "left": 254, "width": 138, "height": 127 }] }] });
+            //load(<any>{ "id": "0", "title": "Foo Fighters Remix", "videos": [{ "title": "Foo Fighters. Walk.", "startTimeInMs": 1000, "endTimeInMs": 60000, "url": "https://www.youtube.com/v/4PkcfQtibmU?version=3&f=videos&app=youtube_gdata", "thumbnailUrl": "http://i.ytimg.com/vi/4PkcfQtibmU/default.jpg", "comments": [{ "text": "wtf?", "startTimeInMs": 1000, "endTimeInMs": 2000, "top": 200, "left": 137, "width": 79, "height": 37 }, { "text": "yay!", "startTimeInMs": 4000, "endTimeInMs": 9000, "top": 110, "left": 415, "width": null, "height": null }, { "text": "so cool guys except what about this super long comment that just goes on and on?!", "startTimeInMs": 6000, "endTimeInMs": 7000, "top": 297, "left": 520, "width": null, "height": null }, { "text": "get funky!", "startTimeInMs": 17000, "endTimeInMs": 19000, "top": 105, "left": 254, "width": 138, "height": 127 }] }] });
         });
     }
 
@@ -102,9 +109,39 @@ module YouTubeMixer {
             $input.prev('.seek-to').data('time', $input.val());
         });
 
-        $('.remix__title').on('change', e => {
+        // Remix
+
+        $remixList = $('.remix__list');
+
+        $remixTitle = $('.remix__title').on('change', e => {
             remix.title = $(e.currentTarget).val();
         });
+
+        $('.remix__save').on('click', e => {
+            localStorage['remix-' + remix.id] = JSON.stringify(remix);
+            renderRemixList();
+        });
+
+        $('.remix__load').on('click', e => {
+            var key = $remixList.val();
+            if (key) {
+                load(JSON.parse(localStorage[key]));
+            }
+        });
+
+        $('.remix__delete').on('click', e => {
+            var key = $remixList.val();
+            if (key) {
+                localStorage.removeItem(key);
+                renderRemixList();
+            }
+        });
+
+        $('.remix__new').on('click', e => {
+            load(newRemix());
+        });
+
+        renderRemixList();
 
         // Coments
 
@@ -199,9 +236,19 @@ module YouTubeMixer {
     }
 
     function renderAll(): void {
-        $('.remix__title').val(remix.title);
+        $remixTitle.val(remix.title);
         renderQueue();
         renderVideo();
+    }
+
+    function renderRemixList(): void {
+        $remixList.empty();
+        for (var key in localStorage) {
+            if (key.indexOf('remix-') === 0) {
+                var remix: IRemix = JSON.parse(localStorage[key]);
+                $remixList.append('<option value="' + key + '">' + remix.title + ' (' + key + ')</option>');
+            }
+        }
     }
 
     function getCurrentTime(): number {

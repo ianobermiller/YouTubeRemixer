@@ -13,7 +13,7 @@
     <h1>YouTube Remixer</h1>
     <div class="search">
         <label>Search for videos to add:</label>
-        <input class="search__input" type="text" value="foo fighters" />
+        <input class="search__input" type="text" value="" />
         <ul class="search__results">
         </ul>
     </div>
@@ -21,7 +21,10 @@
     <div>
         <input class="remix__title" type="text" placeholder="Title" />
         <button class="remix__save" type="button">Save</button>
+        <select class="remix__list"></select>
         <button class="remix__load" type="button">Load</button>
+        <button class="remix__delete" type="button">Delete</button>
+        <button class="remix__new" type="button">New</button>
     </div>
 
     <div class="player">
@@ -70,7 +73,9 @@
     </script>
 
     <script id="time-input-template" type="text/x-handlebars-template">
-        <button type="button" class="seek-to" data-time="{{timeInMs}}">&#8630;</button><input class="time-input" type="number" min="0" step="500" value="{{timeInMs}}" />
+        <button type="button" class="seek-to" data-time="{{timeInMs}}">&#8630;</button>
+        <input class="time-input" type="number" min="0" step="500" value="{{timeInMs}}" />
+        <button type="button" class="take-now">now</button>
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
