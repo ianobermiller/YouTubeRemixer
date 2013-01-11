@@ -50,7 +50,7 @@ var YouTubeMixer;
             if(!$(e.target).closest('.search__results').length) {
                 $searchResults.hide();
             }
-        }).on('click', '.seek-to', seek);
+        });
         $queue = $('.queue').on('click', '.queue__item', onQueueItemClicked);
         $playerCommentsContainer = $('.player__comments').on('mouseenter click', '.player__comments__comment', setupDragAndResize);
         $playerControls = $('.player__controls').on('change', 'input', function (e) {
@@ -62,9 +62,12 @@ var YouTubeMixer;
                 currentVideo.endTimeInMs = input.val();
             }
         });
-        $('.time-input').on('change', function (e) {
+        $(document).on('click', '.seek-to', seek).on('change', '.time-input', function (e) {
             var $input = $(e.currentTarget);
             $input.prev('.seek-to').data('time', $input.val());
+        }).on('click', '.take-now', function (e) {
+            var $button = $(e.currentTarget);
+            $button.prev('.time-input').val(getCurrentTime()).trigger('change');
         });
         $remixList = $('.remix__list');
         $remixTitle = $('.remix__title').on('change', function (e) {

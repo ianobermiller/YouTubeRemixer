@@ -82,7 +82,6 @@ module YouTubeMixer {
             .click(e => {
                 if (!$(e.target).closest('.search__results').length) $searchResults.hide();
             })
-            .on('click', '.seek-to', seek);
 
         // Queue
 
@@ -103,11 +102,19 @@ module YouTubeMixer {
                     currentVideo.endTimeInMs = input.val();
                 }
             });
+        
+        // Shared
 
-        $('.time-input').on('change', e => {
-            var $input = $(e.currentTarget);
-            $input.prev('.seek-to').data('time', $input.val());
-        });
+        $(document)
+            .on('click', '.seek-to', seek)
+            .on('change', '.time-input', e => {
+                var $input = $(e.currentTarget);
+                $input.prev('.seek-to').data('time', $input.val());
+            })
+            .on('click', '.take-now', e => {
+                var $button = $(e.currentTarget);
+                $button.prev('.time-input').val(getCurrentTime()).trigger('change');
+            });
 
         // Remix
 
